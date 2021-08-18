@@ -1,0 +1,239 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1044{\fonttbl{\f0\fnil\fcharset0 Consolas;}}
+{\colortbl ;\red0\green0\blue255;\red0\green0\blue0;\red43\green145\blue175;\red163\green21\blue21;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sl240\slmult1\b\f0\fs32\lang9 Dependency Injection\par
+\par
+\fs22 loosely vs tightely \b0 coupled sytems: refactoring blir enklere blant annet.\par
+Lager et interface som Ninjaklassen implementerer:\par
+\par
+\cf1\fs19 public\cf2  \cf1 class\cf2  \cf3 Ninja\cf2\par
+    \{\par
+\tab\tab\cf1 private\cf2  IWeapon weapon;\par
+\tab\tab\cf1 public\cf2  \cf3 Ninja\cf2 (IWeapon weapon)\par
+        \{\par
+\tab\tab\tab\cf1 this\cf2 .weapon = weapon;\par
+        \}\par
+\tab\tab\cf1 public\cf2  \cf1 void\cf2  Fight()\par
+\tab\tab\{\par
+\tab\tab\tab weapon.Kill();\par
+\tab\tab\}\par
+\tab\}\cf0\fs22\par
+\par
+\par
+\cf2\fs19  \cf1 public\cf2  \cf1 interface\cf2  \cf3 IWeapon\cf2\par
+    \{\par
+        \cf1 void\cf2  Kill();\par
+    \}\par
+\par
+\par
+    \cf1 public\cf2  \cf1 class\cf2  \cf3 ThrowingStart\cf2  : IWeapon\par
+    \{\par
+        \cf1 public\cf2  \cf1 void\cf2  Kill()\par
+        \{\par
+            Console.WriteLine(\cf4 "Killed by a start man"\cf2 );\par
+        \}\par
+    \}\par
+\par
+\par
+\lang1033 n\'e5 kan vi definere s\'e5 mange v\'e5pen vi vil og i kosntrukt\'f8ren til ninja tar vi inn v\'e5pen, trenger ikke deklarer hver eneste v\'e5pen.\par
+\par
+3 ways to add servies:\par
+\par
+\b singleton \b0 = 1 static service, multiple controlelrs can use it, tho same object\par
+\b\par
+transient \b0 = stateless, everytime create a new object (services.AddTransient)\par
+\par
+\b scoped \b0 = a controller asks for 2 objects, 2 arguments, both arguments will get same object, in transient it will recieve 2 different objects\par
+second argument specifies which obejct you get: \par
+\b services.AddTransient<IWeatherForcastService, IWeatherForcastService>();\par
+\b0\par
+\par
+\par
+\b\fs48 CASE STUDY\par
+\b0\fs19\par
+Group \par
+Subject (desc)\par
+.NET c# backend\par
+\cf0\fs22\lang9 Frontend choose any kind\par
+Hosted in azure\par
+Make use of Azure services/resources\par
+Codebasre stored in devops or github\par
+Use CI/CD piplelines from Azure devops (build & release) \par
+ - pipelines, auto build project when merging\par
+ - Pipelines runs and checks if code can be compiled\par
+Git\par
+Git workflow / process in place (PR, code reviewing etc)\par
+Ask permission to use external services/tooling outside azure\par
+BE creative\par
+Divide fratures in must have, should have, nice to have\par
+Unit tests are bonus points\par
+\par
+Minimum viable product - work from there\par
+\par
+\b Ideer\b0\par
+Gramitune\par
+\par
+\cf2\b\fs48\lang1033 AZURE\par
+\cf0\ul\b0\fs22\lang9 azure shared responsibility model\cf2\ulnone\lang1033\par
+private cloud = datacenter\par
+\b infrastructure \b0 (as a service) = hw of the datacenter, you make virtual machines, network of machines in an azure datacenter\par
+\b Platform \b0 (as a service) = hw and vm, on top of that web services, web app is a service etaht will underneath use machine then hw. \par
+\b app service, \b0 its not really tied to .net: node, java php, python etc. \par
+\b App service plan\b0  groups app in a subscription, multiple app service plans in a \b Workgroup(?)\b0 . Share plan with multiple webapps.\par
+\b Hybrid connection \b0 to connect to on premise DB\par
+\b App service env \b0 = expensive, can choose what server app runs on/choose to run it standalone w/o other apps in same container\par
+\b\par
+Services \b0 = app service web apps, needs a container,\par
+\b Images, \b0 WEb appp with git deployment source\par
+\par
+app service settings overrides web.config or appsettings.json (modern file), hidden by azure by default, can also use app settings, con strings, default docs, path mappings, custom container.\par
+\par
+\b App run time\b0 , have to update .net, python, java, php or whatever manually, can do it with the CLI\par
+\par
+\b CORS, different urls = bad man, \b0 only applications on this specific domainname can access the API. \par
+\b\par
+Os patching \b0 is automatic since we use \b app as a service\par
+\par
+\b0 each app has a single ibound IP Adress, inbound can change, can use static inbound ip, each app has a set number of outbound IP\par
+\par
+\b Scaling apps\par
+autoscale\b0  = elastic scaling, scales as load increases\b , scales out or in, \b0 also possible to scale manually\par
+\b patterns: \b0 scale on cpu, weekdays/weekends, holidays, cusom metric\par
+scale up \b =\b0  get a heavier machine/more computer power\par
+scale out = run on several machines\par
+\b autoscale workflow\b0\par
+\b best practices\b0  : min max values are differnet etc se powerpoint\par
+\par
+\b deployment slots, part of app service\b0  = something you dont deploy directly to production, QA quality assurance before production, testing to see if everything is fine. YOu can make any amount of slots, dont need 5 different app services but rather 5 slots, use it to test code before deployment, \par
+\b deploy -> staging <-(swap)-> production\b0 , if something goes wrong with what you deployed, you can reswap. \par
+\b Auto swap, \b0 minimize cold starts and downtime, feks f\'f8rste req til api er treg = cold, varmer opp apien slik at f\'f8rste kall er raskt.\par
+Route traffic between slots, say production has 75% and new deploys has 25%. Normally all traffic is routed to production. You can move users gradually from old to new version.\par
+Kan sette alle disse greiene fra \b Azure CLI\b0 .\par
+\par
+az-204 git, start med tasks, allfiles/labs/01/images\par
+\par
+\par
+\par
+\b\fs48 Azure functions\b0\par
+\fs22\par
+Trigger -> manually trigger ufntion, timed trigger, http request\par
+namespace webjobs\par
+for running small pieces of code/functions in the cloud\par
+3 types of \b scaling\b0 : \par
+\b consumption\b0  -> only pay if you run your function, auto scaling\par
+\b premium\b0  -> for enterprise where you want a connection back to your own premise\par
+\b App service Plan \b0 -> will follow scaling rules of the plan\par
+\par
+Can run locally on devolpement machine, number of emulators feks storage emulator\par
+\par
+er en service\par
+\par
+service -> function -> excecution\par
+\par
+Function itself needs to have access to the storage count (input binding) -> (output binding). THis bindings prevents having to add con strings which is a declerative way to connect to data from your code. \par
+\par
+blobs = any kind of data you can put in storage, eks en bildefil\par
+\par
+\b Azure Virtual Network\b0\par
+premium stuff, alows blant annet secure outbound.\par
+Virtual network makes a bunch of machines talk to eachother without an actual conection. \par
+\par
+\b Best practices\par
+\b0 Performence -> avoid long running functions\par
+Stateless -> if it runs twice it will do the excact same thing\par
+Code defensively -> Assume code will have to run from a previous fail point\par
+Queable functions -> runs one after another, if not queable: \b Durable functions or azure logic apps\b0\par
+\par
+EXTENSIONS IN VS CODE/2019 TO MAKE THESE FUNCTIONS, do this to get them in a rep\par
+\par
+\b\fs28 HOW TO functions\par
+\b0\fs22 vs 2019 -> Azure Functions template -> (some support for .net 5) -> choose trigger type (queue trigger in this case, need storage account for it) -> *queue name, name it man*\par
+\par
+\b kode\b0\par
+(kan inneholde flere prosjekter med funksjoner, alt blir published i samme bolk) -> mye dekorat\'f8rer: [*type* (eks BlobTrigger)]\par
+\par
+localsettings-file -> info om ting og storage account\par
+\par
+publish knapp for \'e5 publishe\par
+\par
+portal.azure.com -> resource group -> *nanv p\'e5 funksjon*\par
+\par
+functions tab to the left\par
+\par
+if u create your functions in an IDE, you cant edit them in Azure Portal.\par
+\par
+Nice about queues: its durable, if a system that should read the queue is down, its still there when it is back up\par
+\par
+Can use functions feks to send sms approval message or receipts when a specific post or get/http req is triggered\par
+\par
+storage account -> 4 services, containers are basically folders, tables are excel sheets good for massive amounts of data, file shares and queues\par
+\par
+\b Azure Storage Explorer \b0 -> applikasjon for \'e5 drive med storage account om du ikke liker nettleserversjon, og \'e6rlig hvem gj\'f8r det\par
+\par
+\b csx\b0  = c sharp script\par
+\par
+\b Durable Func types\b0 : orchestral \par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\b\fs48 Caseoppgave\par
+\b0\fs22\par
+\b Teknologier for musikkapp\par
+\b0\par
+Websockets: {{\field{\*\fldinst{HYPERLINK https://docs.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-5.0 }}{\fldrslt{https://docs.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-5.0\ul0\cf0}}}}\f0\fs22  SignalR\par
+\par
+{{\field{\*\fldinst{HYPERLINK https://github.com/JamesKyburz/youtube-audio-stream/blob/master/index.js }}{\fldrslt{https://github.com/JamesKyburz/youtube-audio-stream/blob/master/index.js\ul0\cf0}}}}\f0\fs22  bruker ytdl for \'e5 streame lyden: {{\field{\*\fldinst{HYPERLINK https://github.com/fent/node-ytdl }}{\fldrslt{https://github.com/fent/node-ytdl\ul0\cf0}}}}\f0\fs22\par
+c# versjon, men uten stream? {{\field{\*\fldinst{HYPERLINK https://github.com/bota87/ytdl-cs }}{\fldrslt{https://github.com/bota87/ytdl-cs\ul0\cf0}}}}\f0\fs22\par
+.net youtube data, henter video og lydinfo (audiourl wut?) {{\field{\*\fldinst{HYPERLINK https://github.com/barakaally/dotnet-youtube-data }}{\fldrslt{https://github.com/barakaally/dotnet-youtube-data\ul0\cf0}}}}\f0\fs22\par
+\par
+En rep som streamer youtube audio {{\field{\*\fldinst{HYPERLINK https://github.com/DoctorFran/Spobrify-public }}{\fldrslt{https://github.com/DoctorFran/Spobrify-public\ul0\cf0}}}}\f0\fs22\par
+\par
+ffmpeg .net\par
+{{\field{\*\fldinst{HYPERLINK https://github.com/cmxl/FFmpeg.NET }}{\fldrslt{https://github.com/cmxl/FFmpeg.NET\ul0\cf0}}}}\f0\fs22\par
+\par
+mer om ffmpeg og youtube-dl\par
+{{\field{\*\fldinst{HYPERLINK https://stackoverflow.com/questions/60745020/is-there-a-way-to-directly-stream-audio-from-a-youtube-video-using-youtube-dl-or }}{\fldrslt{https://stackoverflow.com/questions/60745020/is-there-a-way-to-directly-stream-audio-from-a-youtube-video-using-youtube-dl-or\ul0\cf0}}}}\f0\fs22\par
+\par
+for youtube kan vi kanskje bruke ffmpeg, vil kunne hente lydstream og pipe det ut til gitt rom, gj\'e6res fra backend (ressurskrevende, men kanskje smart for oppgaven). \par
+Kan ogs\'e5 implementere youtube sin api i grensesnittet, fjerne avsplilleren visuelt og la klient ta seg av workload. \par
+\par
+s\'e5 for youtube:\par
+bascially s\'e5 virker det som man kan hente en video og destruktere den. Mna kan da hente ut kun lydstreamen. For \'e5 spille av denne streamen kan man bruke ffmpeg (eller noe nanet kanskje?) som kan spille av lydstreamen. Tror jeg...\par
+\par
+x|\par
+\par
+\par
+\b Ressurser\b0\par
+{{\field{\*\fldinst{HYPERLINK https://github.com/JohnnyCrazy/SpotifyAPI-NET }}{\fldrslt{https://github.com/JohnnyCrazy/SpotifyAPI-NET\ul0\cf0}}}}\f0\fs22\par
+{{\field{\*\fldinst{HYPERLINK https://github.com/Ringobot/SpotifyApi.NetCore }}{\fldrslt{https://github.com/Ringobot/SpotifyApi.NetCore\ul0\cf0}}}}\f0\fs22\par
+\par
+\b Description\b0\par
+A web app that hosts rooms where users can listen to music fetched from youttube/spotify/soundcloud\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\b\par
+\cf0\b0\lang9\par
+}
+ 
