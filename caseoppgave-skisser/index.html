@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src='https://kit.fontawesome.com/31d519a2eb.js' crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <script>
+        function shownoti(e){
+            const notif = document.getElementById('notifications')
+            e.classList.contains("open") ? e.classList.remove('open') : e.classList.add('open')
+            if(e.classList.contains("open")){
+                notif.classList.add('open')
+                return
+            }
+            notif.classList.remove('open')
+
+        }
+    </script>
+    <div class="notifications-container">
+        <div class="notifications-icon">
+            <i class="fas fa-bell" onclick="shownoti(this)"></i>
+        </div>
+        <div class="notifications" id="notifications">
+            <ul>
+                <li><p><i class="fas fa-glass-cheers"></i> Helge just had a beer!</p></li>
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar-container">
+        <sidebar class="sidebar">
+
+            <div class="room-info-container">
+                <h3>ROOM NAME</h3>
+            </div>
+
+            <div class="users-container">
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Sondre Snerk</p></li>
+                        <li><p>Admin</p></li>
+                    </ul>
+                </div>
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Erik</p></li>
+                        <li><p>Guest</p></li>
+                    </ul>
+                </div>
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Atle</p></li>
+                        <li><p>Guest</p></li>
+                    </ul>
+                </div>
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Helge</p></li>
+                        <li><p>Guest</p></li>
+                    </ul>
+                </div>
+            </div>
+        </sidebar>
+    </div>
+
+    <main class="main-content">
+
+    </main>
+
+
+</body>
+</html>
