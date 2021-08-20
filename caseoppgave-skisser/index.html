@@ -175,9 +175,10 @@
             <button onclick="togglePlayback()">play/pause</button>
             <button onclick="nextVideo()">Skip</button>
         </div>
+        <hr style="width: 50%; border: none; border-top: 1px solid grey;"></hr>
         <div style="display: flex; justify-content: center;">
             <input style="width: 350px; align-self: center;" value="https://www.youtube.com/watch?v=Dxd0JTs7muE" id="add-video" type="text"/>
-            <button onclick="submitVideo()">submit</button>
+            <button onclick="submitVideo()">Queue</button>
             
         </div>
 
@@ -200,7 +201,7 @@
            
 
             let playback_pos = 0
-            let video_stream = ["Dxd0JTs7muE", "Dxd0JTs7muE"]
+            let video_stream = ["FTQbiNvZqaY", "Dxd0JTs7muE"]
             var player;
 
             function onYouTubePlayerAPIReady() {
