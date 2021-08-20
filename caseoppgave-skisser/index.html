@@ -8,9 +8,18 @@
 
     <link rel="stylesheet" href="style.css">
     <script src='https://kit.fontawesome.com/31d519a2eb.js' crossorigin="anonymous"></script>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!--
+        scripts for development:
+        https://developers.google.com/youtube/iframe_api_reference#Playback_status
+        player.getCurrentTime() Returns the elapsed time in seconds since the video started playing.
+        player.getDuration() Returns the duration in seconds of the currently playing video.
+
+    -->
     <script>
         function shownoti(e){
             const notif = document.getElementById('notifications')
@@ -22,13 +31,91 @@
             notif.classList.remove('open')
 
         }
+        function makeRequest() {
+            const resp = {
+                notifications:[
+                     {
+                        type: "Beer",
+                        message: "Helge just had a beer!"
+                    },
+                     {
+                        type: "Like",
+                        message: "Sondre just liked a song!"
+                    }
+                    ,
+                     {
+                        type: "Beer",
+                        message: "Helge had another beer!"
+                    },
+                    ,{
+                        type: "Beer",
+                        message: "That's a lot of beer helge!😬"
+                    }
+                ],
+                status : {
+                    room : "Test room suite",
+                    play : true,
+                    time : 60 //in seconds?
+                },
+                users : [
+                    {
+                        name: "Sondre",
+                        type: "Admin"
+                    },
+                    {
+                        name: "Erik",
+                        type: "Guest"
+                    },
+                    {
+                        name: "Atle",
+                        type: "Guest"
+                    },
+                    {
+                        name: "Helge",
+                        type: "Guest"
+                    },
+                    
+                ]
+            }
+            const notif = document.getElementById('notifications-list')
+            const users = document.getElementById('users-container')
+            setInterval(() => {  
+                resp.notifications.forEach((e, index) => {
+                    let notifItem = document.createElement("LI")
+                    switch(e.type){
+                        case "Beer":
+                            
+                            notifItem.innerHTML = `<p class="newitem"><i style="color:#EAD94C;" class="fas fa-glass-cheers"></i> ${e.message}</p>`
+                            setTimeout(() => {
+                                notif.insertBefore(notifItem, notif.childNodes[2])
+                            }, index*1000)
+                            break
+                        case "Like":
+                            notifItem.innerHTML = `<p><i style="color:#F13030;"class="fas fa-heart"></i> ${e.message}</p>`
+                            setTimeout(() => {
+                                notif.insertBefore(notifItem, notif.childNodes[2])
+                            }, 5000)
+                            break
+                        default:
+                            break
+                        }   
+                })
+            }, 6000)
+            
+            
+            
+            
+        }
+        
     </script>
     <div class="notifications-container">
         <div class="notifications-icon">
             <i class="fas fa-bell" onclick="shownoti(this)"></i>
         </div>
         <div class="notifications" id="notifications">
-            <ul>
+           
+            <ul id="notifications-list">
+                <p class="title">Notifications</p>
                 <li><p><i class="fas fa-glass-cheers"></i> Helge just had a beer!</p></li>
             </ul>
         </div>
@@ -40,7 +127,7 @@
                 <h3>ROOM NAME</h3>
             </div>
 
-            <div class="users-container">
+            <div class="users-container" id="users-container">
                 <div class="user">
                     <img src="avatar.jpg" alt="avatar">
                     <ul>
@@ -69,14 +156,133 @@
                         <li><p>Guest</p></li>
                     </ul>
                 </div>
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Helge mChELGE HELGESENS HELGE</p></li>
+                        <li><p>Guest</p></li>
+                    </ul>
+                </div>
             </div>
         </sidebar>
     </div>
 
     <main class="main-content">
+        <div id="para">
+            <div id="ytplayer"></div>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <button onclick="togglePlayback()">play/pause</button>
+            <button onclick="nextVideo()">Skip</button>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <input style="width: 350px; align-self: center;" value="https://www.youtube.com/watch?v=Dxd0JTs7muE" id="add-video" type="text"/>
+            <button onclick="submitVideo()">submit</button>
+            
+        </div>
+
+        <div class="playback-popup">
+            <button onclick="registerUserInteraction(this)">Click here to join session!</button>
+        </div>
+        
+        
+
+        <script>
+            function registerUserInteraction(e) {
+                 // Load the IFrame Player API code asynchronously.
+                var tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/player_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                e.parentNode.remove()
+            }
+           
+
+            let playback_pos = 0
+            let video_stream = ["Dxd0JTs7muE", "Dxd0JTs7muE"]
+            var player;
+
+            function onYouTubePlayerAPIReady() {
+                player = new YT.Player('ytplayer', {
+                    height: '360',
+                    width: '640',
+                    videoId: `${video_stream[playback_pos]}?enablejsapi=1&autoplay=1&mute=1`,
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': window.onPlayerStateChange
+                    }
+                });
+                
+            }
+            window.onPlayerStateChange = (event) => {
+                if (event.data === 0) {
+                    console.log("Fetching next video...");
+                    nextVideo()
+                }
+                console.log(event.data)
+            };
+            
+            function onPlayerReady() {
+               
+            }
+            function togglePlayback(){
+                switch(player.getPlayerState()){
+                    case 1:
+                        player.pauseVideo()
+                        break
+                    case 2: 
+                        player.playVideo()
+                        break
+
+                }
+            }
+            function submitVideo(){
+                /*
+                let inputVal = document.getElementById("add-video").value;
+                document.getElementById('ytplayer').src = "https://www.youtube.com/embed/"+inputVal+"?enablejsapi=1&autoplay=1&mute=0";
+                */
+               try{
+                let test =  document.getElementById("add-video").value
+                var regex = /(?<==).+/;
+                var match = regex.exec(test);
+                //console.log(match[0]);
+                video_stream.push(match[0])
+                console.log(video_stream)
+                
+               }catch(ex){
+                   console.log(ex)
+               }
+               
+            }
+            function nextVideo(){
+                /*
+                document.getElementById('ytplayer').src = "https://www.youtube.com/embed/"+video_stream[playback_pos].url+"?enablejsapi=1&autoplay=1&mute=0";
+                */
+                let id = getNextVideo()
+                if(id == undefined){
+                    console.log("NO MORE VIDEOS TO LOAD!")
+                    return
+                }
+                player.loadVideoById(id);
+                    
+            }
+            function getNextVideo(){
+                if((playback_pos +1) >= video_stream.length){
+                    console.log("undefined")
+                    return undefined
+                }
+
+                playback_pos++
+                return video_stream[playback_pos]
+            }
+            
+        </script>
 
     </main>
-
-
+    
+    <script>
+        makeRequest()
+    </script>
 </body>
 </html>

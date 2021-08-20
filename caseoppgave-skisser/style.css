@@ -1,8 +1,21 @@
 body{
     padding: 0;
     margin:0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Hind', sans-serif;
     color: white;
+}
+
+.main-content button{
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    border: 1px solid white;
+    padding: 10px 20px;
+    margin: 2%
 }
 *{
     box-sizing: border-box;
@@ -10,6 +23,18 @@ body{
 ul{
     list-style: none;
     padding: 0;
+}
+:root {
+    --light: white;
+    --main: #e0e5ec;
+    --dark: #a3b1c6;
+    --darker: #808fa5;
+    --darkest: #728299;
+    --like-red: hsl(2, 89%, 64%);
+
+    /*Shadows*/
+    --sh-emboss: box-shadow: -9px -9px 20px rgb(255 255 255 / 40%), 9px 9px 20px rgb(163 177 198 / 40%), inset 4px 4px 8px rgb(163 177 198 / 10%);
+    --sh-indent : box-shadow: 9px 9px 15px rgb(255 255 255 / 30%), -9px -9px 10px rgb(163 177 198 / 30%), inset -4px -4px 8px rgb(163 177 198 / 10%);
 }
 .notifications-container{
     position: absolute;
@@ -19,7 +44,7 @@ ul{
     flex-direction: column;
     top: 20px;
     right: 20px;
-    width: 300px;
+    width: 310px;
     height: 600px;
     
 }
@@ -29,7 +54,7 @@ ul{
     width: 50px;
     height: 50px;
     z-index: 10;
-    background-color: rgb(47, 56, 63);
+    background-color: rgb(47, 51, 63);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,35 +62,34 @@ ul{
 }
 .notifications-icon i{
     cursor: pointer;
-    
 }
-.notifications-icon i.open{
-    animation-name: bounce;
-    animation-timing-function: ease-in-out;
-}
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
-    40% {transform: translateY(-30px);} 
-    60% {transform: translateY(-15px);} 
- } 
 .notifications{
     display: block;
     position: relative;
     background-color: rgb(30, 30, 39);
     width: 100%;
-    min-height: 300px;
     z-index: 10;
     border-radius: 15px;
     margin-top: 15px;
-    transform: scale(0);
-    transition: transform .05s ease;
     transform-origin: top;
-
+    padding: 0 15px;
+    filter: blur(10px) opacity(0);
+    transform: scale(0.7);
+    transition:  filter .1s ease, transform .1s ease;
+    max-height: 260px;
+}
+.notifications .title{
+    color:rgb(116, 126, 136);
+    text-align: center;
+    margin-top: 0;
 }
 .notifications.open{
+    filter: blur(0) opacity(1);
     transform: scale(1);
-    
 }
+
+
+
 .notifications::before{
     content: "";
     width: 14px;
@@ -77,13 +101,47 @@ ul{
     transform: translate(-50%)  rotate(45deg);
     top: -7px;
     background-color: rgb(30, 30, 39);
+    z-index: -1;
+}
+.notifications ul {
+    height: 100%;
+    padding: 20px 0 0 0;
+    margin: 0;
+    overflow-y: scroll;
+    list-style-type: none;
+}
+.notifications ul::-webkit-scrollbar {
+    width: 0px;
 }
 .notifications ul li{
-    background-color: rgb(47, 56, 63);
+    background-color: rgb(47, 51, 63);
     border-radius: 15px;
-    margin: 30px;
-    padding: 1px;
-    text-align: center;
+    color:rgb(223, 223, 223);
+    padding: 1px 20px;
+    text-align: left;
+    margin-bottom: 10px;
+
+    transform: scale(0.7);
+    opacity: 0;
+    animation: newitem .2s ease-in-out forwards;
+}
+@keyframes newitem {
+   
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.notifications ul li p i{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: rgb(30, 30, 39);
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    
 }
 
 .room-info-container{
@@ -95,26 +153,49 @@ ul{
     position: absolute;
     left: 0;
     top: 0;
-    width: clamp(270px, 30vw, 350px); ;
+    width: clamp(270px, 30vw, 350px); 
     height: 100%;
     background-color: rgb(30, 30, 39);
     padding: 20px;
 }
 .users-container{
     width: 100%;
-    padding: 0 0 0 30px;
+    padding: 0 0 0 10px;
 }
 .user{
     display: flex;
     justify-content: flex-start;
+    position: relative;
     width: 100%;
     max-height: 100px;
     margin-bottom: 1%;
-    
+    padding: 0 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.user::before{
+    content:"";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    border-radius: 50%;
+    transform: scaleX(.1);
+    transform-origin: left;
+    transition: border-radius .1s ease, background-color .1s ease, transform .2s ease;
+
+}
+.user:hover::before{
+    transform: scaleX(1);
+    border-radius: 15px;
+    background-color: rgb(47, 51, 63);
 }
 .user ul{
     list-style: none;
     padding-left: 20px;
+    overflow: hidden;
 }
 .user ul li:nth-child(1){
     color: rgb(255, 255, 255);
@@ -127,7 +208,17 @@ ul{
 }
 .user ul li p{
     margin: 0;
+    
 }
+.user ul li{
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+}
+
 .user img{
     max-width: 50px;
     border-radius: 50%;
@@ -136,7 +227,27 @@ ul{
 
 .main-content{
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
     width: 100%;
     height: 100%;
     background-color: rgb(21, 21, 27);
+    padding-left: clamp(270px, 30vw, 350px);
+}
+
+.playback-popup{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top:0;
+    padding-left: clamp(270px, 30vw, 350px); 
+    left: 0;
+    background-color: rgba(30, 30, 39, 90%);
+    z-index: 9999;
+    backdrop-filter: blur(3px);
 }
