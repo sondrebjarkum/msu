@@ -176,13 +176,26 @@ storage account -> 4 services, containers are basically folders, tables are exce
 \par
 \par
 \par
+\fs48\par
+\b Cloud security\b0\par
+\fs22\par
 \par
+Manage keys, secrets, certificates with \b Azure KeyVault API\b0\par
+ - dont hard code secrets\par
+ - Safeguard cryptographic keys and other secrets that coud apps and services use:\par
+    * increase security nad control over keys and passwrds, \par
+    * App has no direct access to keys\par
+    * FIPS 140-2 validatioan\par
+Vault = logical group of secrets\par
+Admin = \b vault owner\par
+\b0 User = \par
 \par
+\b managed identity\b0 : assigned identity for azure resource, get an identity and use htat identity to access vault\par
+\b Service Principal\b0 : can provide secrets, hard to use not recommended\par
 \par
-\par
-\par
-\par
-\par
+\b Vault types: \b0 certificates, keys, secrets, certificates adds extra step of security for identification\par
+\b Secret \b0 is like username and password, key value pair\par
+ \par
 \par
 \par
 \par
@@ -191,13 +204,13 @@ storage account -> 4 services, containers are basically folders, tables are exce
 \b0\fs22\par
 \b Teknologier for musikkapp\par
 \b0\par
-Websockets: {{\field{\*\fldinst{HYPERLINK https://docs.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-5.0 }}{\fldrslt{https://docs.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-5.0\ul0\cf0}}}}\f0\fs22  SignalR\par
+Websockets: {\cf0{\field{\*\fldinst{HYPERLINK https://docs.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-5.0 }}{\fldrslt{https://docs.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-5.0\ul0\cf0}}}}\f0\fs22  SignalR\par
 \par
-{{\field{\*\fldinst{HYPERLINK https://github.com/JamesKyburz/youtube-audio-stream/blob/master/index.js }}{\fldrslt{https://github.com/JamesKyburz/youtube-audio-stream/blob/master/index.js\ul0\cf0}}}}\f0\fs22  bruker ytdl for \'e5 streame lyden: {{\field{\*\fldinst{HYPERLINK https://github.com/fent/node-ytdl }}{\fldrslt{https://github.com/fent/node-ytdl\ul0\cf0}}}}\f0\fs22\par
-c# versjon, men uten stream? {{\field{\*\fldinst{HYPERLINK https://github.com/bota87/ytdl-cs }}{\fldrslt{https://github.com/bota87/ytdl-cs\ul0\cf0}}}}\f0\fs22\par
-.net youtube data, henter video og lydinfo (audiourl wut?) {{\field{\*\fldinst{HYPERLINK https://github.com/barakaally/dotnet-youtube-data }}{\fldrslt{https://github.com/barakaally/dotnet-youtube-data\ul0\cf0}}}}\f0\fs22\par
+{\cf0{\field{\*\fldinst{HYPERLINK https://github.com/JamesKyburz/youtube-audio-stream/blob/master/index.js }}{\fldrslt{https://github.com/JamesKyburz/youtube-audio-stream/blob/master/index.js\ul0\cf0}}}}\f0\fs22  bruker ytdl for \'e5 streame lyden: {\cf0{\field{\*\fldinst{HYPERLINK https://github.com/fent/node-ytdl }}{\fldrslt{https://github.com/fent/node-ytdl\ul0\cf0}}}}\f0\fs22\par
+c# versjon, men uten stream? {\cf0{\field{\*\fldinst{HYPERLINK https://github.com/bota87/ytdl-cs }}{\fldrslt{https://github.com/bota87/ytdl-cs\ul0\cf0}}}}\f0\fs22\par
+.net youtube data, henter video og lydinfo (audiourl wut?) {\cf0{\field{\*\fldinst{HYPERLINK https://github.com/barakaally/dotnet-youtube-data }}{\fldrslt{https://github.com/barakaally/dotnet-youtube-data\ul0\cf0}}}}\f0\fs22\par
 \par
-En rep som streamer youtube audio {{\field{\*\fldinst{HYPERLINK https://github.com/DoctorFran/Spobrify-public }}{\fldrslt{https://github.com/DoctorFran/Spobrify-public\ul0\cf0}}}}\f0\fs22\par
+En rep som streamer youtube audio {\cf0{\field{\*\fldinst{HYPERLINK https://github.com/DoctorFran/Spobrify-public }}{\fldrslt{https://github.com/DoctorFran/Spobrify-public\ul0\cf0}}}}\f0\fs22\par
 \par
 for youtube kan vi kanskje bruke ffmpeg, vil kunne hente lydstream og pipe det ut til gitt rom, gj\'e6res fra backend (ressurskrevende, men kanskje smart for oppgaven). \par
 Kan ogs\'e5 implementere youtube sin api i grensesnittet, fjerne avsplilleren visuelt og la klient ta seg av workload. \par
@@ -209,8 +222,8 @@ x|\par
 \par
 \par
 \b Ressurser\b0\par
-{{\field{\*\fldinst{HYPERLINK https://github.com/JohnnyCrazy/SpotifyAPI-NET }}{\fldrslt{https://github.com/JohnnyCrazy/SpotifyAPI-NET\ul0\cf0}}}}\f0\fs22\par
-{{\field{\*\fldinst{HYPERLINK https://github.com/Ringobot/SpotifyApi.NetCore }}{\fldrslt{https://github.com/Ringobot/SpotifyApi.NetCore\ul0\cf0}}}}\f0\fs22\par
+{\cf0{\field{\*\fldinst{HYPERLINK https://github.com/JohnnyCrazy/SpotifyAPI-NET }}{\fldrslt{https://github.com/JohnnyCrazy/SpotifyAPI-NET\ul0\cf0}}}}\f0\fs22\par
+{\cf0{\field{\*\fldinst{HYPERLINK https://github.com/Ringobot/SpotifyApi.NetCore }}{\fldrslt{https://github.com/Ringobot/SpotifyApi.NetCore\ul0\cf0}}}}\f0\fs22\par
 \par
 \b Description\b0\par
 A web app that hosts rooms where users can listen to music fetched from youttube/spotify/soundcloud\par
