@@ -3,7 +3,7 @@
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
 \pard\sl240\slmult1\b\f0\fs32\lang9 Dependency Injection\par
 \par
-\fs22 loosely vs tightely \b0 coupled sytems: refactoring blir enklere blant annet.\par
+\fs22 loosely vs tightely \b0 coupled sytems: refactoring blir enklere med loosely blant annet.\par
 Lager et interface som Ninjaklassen implementerer:\par
 \par
 \cf1\fs19 public\cf2  \cf1 class\cf2  \cf3 Ninja\cf2\par
@@ -212,7 +212,57 @@ Admin = \b vault owner\par
 {\b{\field{\*\fldinst{HYPERLINK https://www.examcollection.com/AZ-204.html }}{\fldrslt{https://www.examcollection.com/AZ-204.html\ul0\cf0}}}}\f0\fs22\par
 \par
 \b\par
-\b0\par
+\b0\fs48\par
+\b Implement API Management\b0\par
+\fs22\par
+Company want o expose data to anyone, like open source data. \par
+THIS helps you with the magement of it. ID you have 10 apis, maybe some are public and some private, so youi have to subrscribe to them, this helps you with that. Use case is for enterprise size and if you hve several apis, not just one. \par
+\par
+\b Developer portals\b0  - can automatically generate dev portal, can get key for api, see if its public or private, a lot of tweaking like throttling and cache mechanisms.\par
+\b BAckend api \b0 - talks with business logic\b\par
+frontend api \b0 - the facade hosyed by api manageement to obfuscate your backend\b\par
+product \b0 - one or more apis in a bundle, can be open or protecded, open is open protecded you need to subrscribe to it, for example enterprise api/advanced api is protected and the basic api is public\b\par
+operation\b0  - an api call/endpoints/operations\par
+differentiate\par
+\b versions \b0 - a breakign change in the front end api, maybe a client uses the old a new version breaks something\par
+\b revision\b0  -  a non breakign change to frontend api\par
+\b developer portal \b0 - intergface that devs use to learn the api\par
+\par
+\b Cognitive services\b0\par
+\par
+\b API management\b0 , you can edit headers to not return unnececery or dangerous data, like data that can be used by hackers.\par
+\par
+\par
+\b what are certificates\b0 : it's a cryptographic key, issuer is who created the certificate, additional secutiry, on api manageemndt you send certificate and the server will check it, the server generated the certificate, public and private keys. acps encyption(?). \par
+\par
+\par
+\b\fs44 MODULE 10\par
+\b0\fs22 event based architecture\par
+Messaging based are different from event based\par
+\b\par
+CLOUD MESSAGING OPTIONS (for azure at least)\par
+event grid \b0 dont think about scalibility, wouldnt build a bisuness based event grid there are better ways\par
+\b event hubs \b0 a special place for big data, \par
+\b service bus \b0 messaging solution, similar to event driven architecture\b\par
+queue storage \b0 messaging solution, similar to event driven architecture, publish message and OK from reciever it was recieved, simple queing, lightweight, not a lot of functionality, wouldnt recommend it for big business, but nice for hobby project\par
+\par
+say youre making a web shop, you have a front end where ppl can buy goods, add products to shopping basket, if you look at all the logic for the order process, if you make a tight coupling with rontend and middleware (api) it wont scale good with increased traffic, so you want to make a decoupling: you dont want all the order handling etc be in your backend, you want to offload that to another backend. So you have service bus that take messages about orders and will be stored there until order is processed. \par
+\par
+2 communication mechanisms: \par
+\b queue \b0 and \b topics\b0\par
+\par
+\b queue:\b0\par
+________________________\par
+|__|__|__|__|__|__|__|__|-----O\par
+  |  | \tab\tab\tab  \tab ||\par
+MESSAGES\tab\tab\tab     BACKEND\par
+(sends message)\tab\tab (process message)\par
+in queue mesages are waiting to be processed by backend.\par
+Sending of message and processing arent "stable", backend can be slower than messages and the queue works as a buffer. Doesnt matter how big the queue is, you just have to wait for confirmation from backend that the message has been processed, doesnt matter if it takes 1 second or 5 minutes, theres still a queue. \par
+\par
+\b topic:\b0\par
+in queue a reciever of message gets some of the msages, not all, in topic all the senders recieve all the responses.\par
+\par
 \par
 \par
 \b\fs48 Caseoppgave\par
