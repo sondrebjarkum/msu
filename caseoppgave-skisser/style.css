@@ -317,7 +317,7 @@ ul{
     justify-content: center;
     align-items: center;
     top:0;
-    padding-left: var(--clamp); 
+    
     left: 0;
     background-color: rgba(30, 30, 39, 90%);
     z-index: 9999;
