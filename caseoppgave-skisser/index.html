@@ -102,9 +102,6 @@
                 })
             }, 6000)
             
-            
-            
-            
         }
         
     </script>
@@ -124,7 +121,7 @@
         <sidebar class="sidebar">
 
             <div class="room-info-container">
-                <h3>ROOM NAME</h3>
+                <h3 id="room-name-title"></h3>
             </div>
 
             <div class="users-container" id="users-container">
@@ -163,6 +160,73 @@
                         <li><p>Guest</p></li>
                     </ul>
                 </div>
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Helge mChELGE HELGESENS HELGE</p></li>
+                        <li><p>Guest</p></li>
+                    </ul>
+                </div>
+                <div class="user">
+                    <img src="avatar.jpg" alt="avatar">
+                    <ul>
+                        <li><p>Helge mChELGE HELGESENS HELGE</p></li>
+                        <li><p>Guest</p></li>
+                    </ul>
+                </div>
+            </div>
+            <br/>
+            <!-- PLAYLIST -->
+            <h3>Playlist</h3>
+            <div class="playlist-container">
+                
+                
+                <div class="item">
+                    <table>
+                        <tr>
+                            <td><i class="fas fa-play"></i></td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Toto - Africa (Official HD Video)</td>
+                        </tr>
+
+                    </table>
+                </div>
+                
             </div>
         </sidebar>
     </div>
@@ -183,27 +247,108 @@
         </div>
 
         <div class="playback-popup">
-            <button onclick="registerUserInteraction(this)">Click here to join session!</button>
+            <form onsubmit="event.preventDefault();  registerUserInteraction(this, false)" method="">
+                <header>
+                    <h2>Welcome to hell</h2>
+                    <hr/>
+                </header>
+                <br/>
+                <p><weak >Join / create room session</weak></p>
+                <label for="user-name">Username</label>
+                <input id="user-name" type="text" required="required" pattern="[A-Za-z0-9 ]{3,20}" placeholder="Username" />
+                <label for="room-name">Room ID</label>
+                <input id="room-name" type="text" required="required" pattern="[A-Za-z0-9]{6,20}" placeholder="Room id" />
+                <br/>
+                <button id="create-room" type="submit">Join / Create</button>
+                <br/>
+                
+                <h5>OR</h5>
+                <br/>
+                <a id="joinLastSessionButton" onclick="registerUserInteraction(this, true)"><p><span></weak>Join last session</span></p></a>
+            </form>
         </div>
         
         
 
         <script>
-            function registerUserInteraction(e) {
-                 // Load the IFrame Player API code asynchronously.
-                var tag = document.createElement('script');
-                tag.src = "https://www.youtube.com/player_api";
-                var firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-                e.parentNode.remove()
+            let room_name = () => {
+                return sessionStorage.getItem('room-name')
             }
-           
+            let username = () =>{
+                return localStorage.getItem('username')
+            }
+            //check if there is a room session stored
+            const checkLastSession = () => {
+                const session = sessionStorage.getItem('room-name')
+                return  session !== null 
+            }
+            //set styling of "join last session" button based on checkLastSession()
+            const setLastSessionBtn = () => {
+                const id = document.getElementById('joinLastSessionButton')
+                checkLastSession() ? id.classList.remove('button-disabled') : id.classList.add('button-disabled')
+            }
+            const checkUsername = () =>{
+                const locals = localStorage.getItem('username')
+                return locals !== null
+            }
+            const setUsernameForInput = () =>{
+                const id = document.getElementById('user-name')
+                checkUsername() ? id.value = username() : null
+            }
+            setUsernameForInput()
+            setLastSessionBtn()
 
+            function animatePopUpRemove(element){
+                return new Promise((resolve, reject) => {
+                    console.log(element)
+                    element.classList.add("slideup")
+                    setTimeout(() => {
+                        resolve(true)
+                    }, 500);
+                    
+                })
+            }
+            
+
+            function registerUserInteraction(e, joinLastSession) {
+                console.log(e)
+                //user and session validation
+                if(joinLastSession && checkLastSession()){
+                    const username = document.getElementById('user-name')
+                    if(!username.checkValidity()){
+                        console.log("invalid")
+                        document.getElementById('create-room').click()
+                        return
+                    }
+                    localStorage.setItem('username', username.value)
+                    console.log(room_name())
+                }
+
+                if(!joinLastSession){
+                    localStorage.setItem('username', document.getElementById('user-name').value)
+                    sessionStorage.setItem('room-name', document.getElementById('room-name').value);
+                }
+                
+                //e.closest('.playback-popup').remove()
+                animatePopUpRemove(e.closest('form')).then((res, rej) => {
+                    if(res){
+                        e.closest('.playback-popup').remove()
+                        // Load the IFrame Player API code asynchronously.
+                        var tag = document.createElement('script');
+                        tag.src = "https://www.youtube.com/player_api";
+                        var firstScriptTag = document.getElementsByTagName('script')[0];
+                        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                        document.getElementById("room-name-title").innerHTML = room_name()
+                    }
+                })
+                console.log(room_name())
+            }
+            
+            
             let playback_pos = 0
             let video_stream = ["FTQbiNvZqaY"]
             var player;
-
+            
             function onYouTubePlayerAPIReady() {
                 player = new YT.Player('ytplayer', {
                     height: '360',
