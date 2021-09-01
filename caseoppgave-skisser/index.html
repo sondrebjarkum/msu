@@ -19,6 +19,13 @@
         player.getCurrentTime() Returns the elapsed time in seconds since the video started playing.
         player.getDuration() Returns the duration in seconds of the currently playing video.
 
+        For getting thumbnail:
+        https://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
+        https://img.youtube.com/vi/<insert-youtube-video-id-here>/0.jpg
+
+        youtube api key:
+        AIzaSyCzTFWtPD8T1Q8cF9bFg5UH31sjJSAQZSo
+
     -->
     <script>
         function shownoti(e){
@@ -104,6 +111,33 @@
             
         }
         
+        const playbackResponse = {
+            playlist: [
+                {
+                    id : 1,
+                    videoLink : "https://www.youtube.com/watch?v=htgr3pvBr-I"
+                },
+                {
+                    id : 2,
+                    videoLink : "https://www.youtube.com/watch?v=Gs069dndIYk"
+                },
+                {
+                    id : 3,
+                    videoLink : "https://www.youtube.com/watch?v=HgzGwKwLmgM"
+                },
+                {
+                    id : 4,
+                    videoLink : "https://www.youtube.com/watch?v=Kt-tLuszKBA"
+                }
+            ],
+            currentlyPlaying: {
+                videoId : 1,
+                currentTime : 20
+            }
+        }
+        
+        
+        
     </script>
     <div class="notifications-container">
         <div class="notifications-icon">
@@ -178,10 +212,10 @@
             <br/>
             <!-- PLAYLIST -->
             <h3>Playlist</h3>
-            <div class="playlist-container">
+            <div class="playlist-container" >
                 
                 
-                <div class="item">
+                <div class="item" id="playlist-items">
                     <table>
                         <tr>
                             <td><i class="fas fa-play"></i></td>
@@ -245,6 +279,7 @@
             <button onclick="submitVideo()">Queue</button>
             
         </div>
+        
 
         <div class="playback-popup">
             <form onsubmit="event.preventDefault();  registerUserInteraction(this, false)" method="">
@@ -333,12 +368,20 @@
                 animatePopUpRemove(e.closest('form')).then((res, rej) => {
                     if(res){
                         e.closest('.playback-popup').remove()
-                        // Load the IFrame Player API code asynchronously.
-                        var tag = document.createElement('script');
-                        tag.src = "https://www.youtube.com/player_api";
-                        var firstScriptTag = document.getElementsByTagName('script')[0];
-                        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-                        document.getElementById("room-name-title").innerHTML = room_name()
+                        setVideoPlayerState().then((resolve, reject) => {
+                            if(resolve){
+                                // Load the IFrame Player API code asynchronously.
+                                var tag = document.createElement('script');
+                                tag.src = "https://www.youtube.com/player_api";
+                                var firstScriptTag = document.getElementsByTagName('script')[0];
+                                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                                // /load the IFrame
+
+                                document.getElementById("room-name-title").innerHTML = room_name()
+                                makeRequest()
+
+                            }
+                        })
                     }
                 })
                 console.log(room_name())
@@ -346,10 +389,13 @@
             
             
             let playback_pos = 0
-            let video_stream = ["FTQbiNvZqaY"]
+            let video_stream = new Array()
+            let playback_time_pos = 0
+            let playlist_data = new Array()
             var player;
             
             function onYouTubePlayerAPIReady() {
+                console.log(video_stream)
                 player = new YT.Player('ytplayer', {
                     height: '360',
                     width: '640',
@@ -370,7 +416,7 @@
             };
             
             function onPlayerReady() {
-               
+                setVideoPlayerPlaybackTimePos()
             }
             function togglePlayback(){
                 switch(player.getPlayerState()){
@@ -383,24 +429,40 @@
 
                 }
             }
-            function submitVideo(){
-                /*
-                let inputVal = document.getElementById("add-video").value;
-                document.getElementById('ytplayer').src = "https://www.youtube.com/embed/"+inputVal+"?enablejsapi=1&autoplay=1&mute=0";
-                */
+            //adds videoId for playback, if paramater is empty 
+            //get value from client submit field
+            function submitVideo(link){
                try{
-                let test =  document.getElementById("add-video").value
-                var regex = /(?<==).+/;
-                var match = regex.exec(test);
-                //console.log(match[0]);
-                video_stream.push(match[0])
-                console.log(video_stream)
-                
+                    if(link == "" || link == undefined){
+                        console.log(link)
+                        link = document.getElementById("add-video").value
+                        video_stream.push(extractVideoId(link))
+                        setTimeout(() => {
+                            getOneVideoStreamTitle()
+                        }, 250);
+                        setTimeout(() => {
+                            appendPlaylist()
+                        }, 800);
+                        return
+                    }
+                    video_stream.push(extractVideoId(link))
+                    console.log(video_stream)
+
                }catch(ex){
-                   console.log(ex)
+                    console.log(ex)
                }
-               
             }
+            //takes a full youtube link and extraxts the videoId with regex
+            function extractVideoId(link){
+                try{
+                    var regex = /(?<==).+/;
+                    var match = regex.exec(link);
+                    return match[0]
+                }catch(ex){
+                    console.log(ex)
+               }
+            }
+
             function nextVideo(){
                 /*
                 document.getElementById('ytplayer').src = "https://www.youtube.com/embed/"+video_stream[playback_pos].url+"?enablejsapi=1&autoplay=1&mute=0";
@@ -411,6 +473,7 @@
                     return
                 }
                 player.loadVideoById(id);
+                trudgePlaylist()
                     
             }
             function getNextVideo(){
@@ -422,13 +485,102 @@
                 playback_pos++
                 return video_stream[playback_pos]
             }
+            function setVideoPlayerState(){
+                 return new Promise((resolve, reject) => {
+                    const resp = playbackResponse
+                    console.log(resp)
+                    resp.playlist.forEach(e => {
+                        submitVideo(e.videoLink)
+                    });
+                    playback_pos = resp.currentlyPlaying.videoId
+                    playback_time_pos = resp.currentlyPlaying.currentTime
+                    getVideostreamTitles()
+                    setTimeout(() => {
+                        setPlaylist()
+                    }, 500);
+                    
+                    resolve(true)
+                 })
+                
+            }
+            function setVideoPlayerPlaybackTimePos(){
+                player.seekTo(playback_time_pos, true)
+            }
+            function getVideostreamTitles(){
+                return new Promise((resolve, reject) => {
+                    video_stream.forEach(e => {
+                        fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v='+e)
+                        .then(response => response.text())
+                        .then( (data) => {
+                            let asdasd = JSON.parse(data)
+                            playlist_data.push(asdasd.title)
+                            }
+                        );
+                        
+                    });
+                    
+                    resolve(true)
+                })              
+            }
+            function getOneVideoStreamTitle(){
+                console.log(video_stream[video_stream.length -1])
+                fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v='+video_stream[video_stream.length -1])
+                        .then(response => response.text())
+                        .then( (data) => {
+                            let asdasd = JSON.parse(data)
+                            playlist_data.push(asdasd.title)
+                            console.log(asdasd.title)
+                            }
+                        );
+            }
+            function setPlaylist(){
+                
+                let html = `<table>`
+                let htmlEnd = `</table>`
+                playlist_data.forEach((title, index) => {
+                    let indexForUser = index +1
+                    if(index == playback_pos){
+                        html += `
+                            <tr>
+                                <td><i class="fas fa-play"></i></td>
+                                <td>${title}</td>
+                            </tr>
+                        `
+                    }
+                    else{
+                        html += `
+                            <tr>
+                                <td>${indexForUser}</td>
+                                <td>${title}</td>
+                            </tr>
+                        `
+                    }                   
+                });
+                html += htmlEnd
+                document.getElementById('playlist-items').innerHTML = html
+
+            }
+            function appendPlaylist(){
+                let indexForUser = playlist_data.length
+                let html = `
+                            <tr>
+                                <td>${indexForUser}</td>
+                                <td>${playlist_data[playlist_data.length-1]}</td>
+                            </tr>
+                        `
+                let id = document.getElementById('playlist-items')
+                id.firstChild.innerHTML += html
+
+            }
+            function trudgePlaylist(){
+                let id = document.getElementById('playlist-items').children[0].children
+                console.log(id)
+            }
             
         </script>
 
     </main>
     
-    <script>
-        makeRequest()
-    </script>
+    
 </body>
 </html>
